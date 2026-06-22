@@ -5,6 +5,6 @@ import { registerValidator } from '../validators/auth.validation.js';
 
 const authRouter = express.Router();
 
-authRouter.post("register",registerValidator,registerController)
+authRouter.post("/register",registerValidator,registerController)
 
 export default authRouter;

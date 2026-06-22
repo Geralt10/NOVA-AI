@@ -11,18 +11,18 @@ export function validate(req,res,next){
 export const registerValidator =[
     body("username")
     .trim()
-    .isEmpty().withMessage("username is required")
+    .notEmpty().withMessage("username is required")
     .isLength({min:3,max:30}).withMessage("username length must be between 3 and 30 characters")
     .matches(/^[a-zA-Z0-9_]+$/).withMessage("username can only contain letters, numbers, and underscores"),
 
     body("email")
     .trim()
-    .isEmpty().withMessage("email is required")
+    .notEmpty().withMessage("email is required")
     .isEmail().withMessage("invalid email address"),
 
     body("password")
     .trim()
-    .isEmpty().withMessage("password is required")
+    .notEmpty().withMessage("password is required")
     .isLength({min:6,max:100}).withMessage("password length must be between 6 and 100 characters"),
 
     validate
