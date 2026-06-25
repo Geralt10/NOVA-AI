@@ -376,6 +376,7 @@ export async function logoutController(req,res){
 
 
 //forgot password
+
 export async function forgotPasswordController(req, res) {
   const { email } = req.body;
 
@@ -388,12 +389,24 @@ export async function forgotPasswordController(req, res) {
     });
   }
 
+  // ⏱️ Throttling (1 minute)
+  if (
+    user.lastPasswordResetEmailSentAt &&
+    Date.now() - user.lastPasswordResetEmailSentAt.getTime() < 60 * 1000
+  ) {
+    return res.status(429).json({
+      success: false,
+      message:
+        "Please wait 1 minute before requesting another password reset email.",
+    });
+  }
+
   const resetToken = jwt.sign(
     {
       id: user._id,
       email: user.email,
     },
-    process.env.JWT_SECRET,
+    process.env.RESET_PASSWORD_SECRET,
     {
       expiresIn: "15m",
     }
@@ -413,15 +426,21 @@ export async function forgotPasswordController(req, res) {
         Reset Password
       </a>
 
-      <p>If you did not request this, you can safely ignore this email.</p>
+      <p>If you did not request this email, you can safely ignore it.</p>
     `,
   });
+
+  // ✅ Update timestamp after successful email send
+  user.lastPasswordResetEmailSentAt = new Date();
+  await user.save();
 
   return res.status(200).json({
     success: true,
     message: "Password reset email sent successfully.",
   });
 }
+
+
 
 
 //reset password

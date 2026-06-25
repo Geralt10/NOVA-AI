@@ -29,7 +29,11 @@ const userSchema = new mongoose.Schema({
     lastVerificationEmailSentAt: {
     type: Date,
     default: null,
-  }
+  },
+  lastPasswordResetEmailSentAt: {
+  type: Date,
+  default: null,
+}
 },{timestamps:true});
 
 
