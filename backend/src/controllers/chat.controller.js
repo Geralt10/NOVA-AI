@@ -1,9 +1,6 @@
 import chatModel from "../models/chat.model.js";
 import messageModel from "../models/message.model.js";
-import {
-  generateResponse,
-  generateChatTitle,
-} from "../services/ai.service.js";
+import { generateResponse, generateChatTitle } from "../services/ai.service.js";
 
 export async function sendMessageController(req, res, next) {
   try {
@@ -52,6 +49,7 @@ export async function sendMessageController(req, res, next) {
       success: true,
       title,
       chat,
+      chatID: currentChatId,
       aiMessage,
     });
   } catch (error) {
@@ -59,8 +57,7 @@ export async function sendMessageController(req, res, next) {
 
     return res.status(500).json({
       success: false,
-      message: error.message
-      
+      message: error.message,
     });
   }
 }
@@ -86,31 +83,30 @@ export async function getChats(req, res) {
   }
 }
 
-export async function getMessages(req,res) {
-    const {chatID}=req.params;
+export async function getMessages(req, res) {
+  const { chatID } = req.params;
 
-    const chat = await chatModel.findOne({
-        _id:chatID,
-        user:req.user.id
-    })
+  const chat = await chatModel.findOne({
+    _id: chatID,
+    user: req.user.id,
+  });
 
-    if(!chat){
-        return res.status(404).json({
-            success:false,
-            message:"chat not found",
-            err:"chat not found"
-        })
-    }
+  if (!chat) {
+    return res.status(404).json({
+      success: false,
+      message: "chat not found",
+      err: "chat not found",
+    });
+  }
 
-    const messages = await messageModel.find({
-        chat:chatID
-    })
+  const messages = await messageModel.find({
+    chat: chatID,
+  });
 
-    res.status(200).json({
-        message:"messages retrived successfully",
-        messages
-    })
-
+  res.status(200).json({
+    message: "messages retrived successfully",
+    messages,
+  });
 }
 
 export async function deleteChat(req, res) {

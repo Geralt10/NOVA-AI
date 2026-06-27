@@ -6,10 +6,10 @@ const chatRouter = Router();
 
 chatRouter.post("/message", identifyUser, sendMessageController);
 
-chatRouter.get("/",identifyUser,getChats);
+chatRouter.get("/", identifyUser, getChats);
 
-chatRouter.get("/:chatID/messages",identifyUser,getMessages);
+chatRouter.get("/:chatID/messages", identifyUser, getMessages);
 
-chatRouter.post("/delete/:chatID",identifyUser,)
+chatRouter.post("/delete/:chatID", identifyUser);
 
 export default chatRouter;

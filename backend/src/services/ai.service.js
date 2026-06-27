@@ -1,4 +1,3 @@
-
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HumanMessage, SystemMessage, AIMessage } from "langchain";
 import { ChatMistralAI } from "@langchain/mistralai";
@@ -14,14 +13,15 @@ const mistralModel = new ChatMistralAI({
 });
 
 export async function generateResponse(messages) {
-  const response = await geminiModel.invoke(messages.map(msg=>{
-    if(msg.role=="user"){
-      return new HumanMessage(msg.content);
-    }
-    else if(msg.role=="ai"){
-      return new AIMessage(msg.content)
-    }
-  }));
+  const response = await geminiModel.invoke(
+    messages.map((msg) => {
+      if (msg.role == "user") {
+        return new HumanMessage(msg.content);
+      } else if (msg.role == "ai") {
+        return new AIMessage(msg.content);
+      }
+    })
+  );
 
   return response.text;
 }
@@ -35,7 +35,7 @@ Generate a concise, human-friendly title that accurately summarizes the user's m
 
 Requirements:
 - Output ONLY the title.
-- 2–6 words.
+- 3–6 words.
 - No quotes.
 - No markdown.
 - No emojis.
