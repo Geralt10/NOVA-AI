@@ -12,3 +12,11 @@ backend/node_modules/
 node_modules/
 # Logs
 *.log
+
+
+.prettierrc.json
+
+package-lock.json
+package.json
+
+.gitignore
