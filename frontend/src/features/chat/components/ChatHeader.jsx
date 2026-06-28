@@ -1,10 +1,39 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const models = ["GPT-4o", "GPT-4.1", "Claude 4", "Gemini 2.5"];
 
 export default function ChatHeader({ setIsSidebarOpen }) {
   const [selectedModel, setSelectedModel] = useState("GPT-4o");
   const [showModels, setShowModels] = useState(false);
+  const chats = useSelector((state) => Object.values(state.chat.chats));
+  const currentChatID = useSelector((state) => state.chat.currentChatID);
+
+  const currentChat = chats.find((chat) => chat.id === currentChatID);
+
+  function getLastUpdated(lastUpdated) {
+    if (!lastUpdated) return "";
+
+    const now = new Date();
+    const updated = new Date(lastUpdated);
+
+    const diff = now - updated;
+
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (minutes < 1) return "Just now";
+    if (minutes < 60) return `${minutes} min ago`;
+    if (hours < 24) return `${hours} hr ago`;
+    if (days < 7) return `${days} day ago`;
+
+    return updated.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  }
 
   return (
     <header className="relative flex h-16 sm:h-20 items-center justify-between border-b border-white/10 bg-[#0D0D14] px-4 sm:px-6 lg:px-8">
@@ -22,10 +51,12 @@ export default function ChatHeader({ setIsSidebarOpen }) {
 
         <div>
           <h1 className="text-base font-semibold text-white sm:text-lg lg:text-xl">
-            Build AI Dashboard
+            {currentChat ? currentChat.title : "Title"}
           </h1>
 
-          <p className="hidden text-sm text-zinc-500 sm:block">Last updated 2 minutes ago</p>
+          <p className="hidden text-sm text-zinc-500 sm:block">
+            {currentChat ? `Last updated ${getLastUpdated(currentChat.lastUpdated)}` : "New Chat"}
+          </p>
         </div>
       </div>
 

@@ -1,7 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useChat } from "../hooks/useChat";
-
 
 export default function ChatInput() {
   const [message, setMessage] = useState("");
@@ -11,6 +10,14 @@ export default function ChatInput() {
   const currentChatID = useSelector((state) => state.chat.currentChatID);
 
   const isChatLoading = useSelector((state) => state.chat.isChatLoading);
+
+  useEffect(() => {
+    if (!currentChatID) {
+      setMessage("");
+      textareaRef.current.style.height = "40px";
+      textareaRef.current?.focus();
+    }
+  }, [currentChatID]);
 
   const handleChange = (e) => {
     setMessage(e.target.value);

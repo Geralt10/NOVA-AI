@@ -1,0 +1,23 @@
+import { tavily as Tavily } from "@tavily/core";
+
+const tavily = Tavily({
+  apiKey: process.env.TAVILY_API_KEY,
+});
+
+export const searchInternet = async ({ query }) => {
+  console.log("🔍 Tool called:", query);
+  const results = await tavily.search(query, {
+    maxResults: 5,
+    searchDepth: "advanced",
+  });
+
+  return results.results
+    .map(
+      (item) => `
+Title: ${item.title}
+URL: ${item.url}
+Content: ${item.content}
+`
+    )
+    .join("\n\n");
+};

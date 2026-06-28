@@ -1,5 +1,6 @@
 import { useState } from "react";
-
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 export default function ChatBubble({ role, content, time }) {
   const [copied, setCopied] = useState(false);
 
@@ -22,7 +23,7 @@ export default function ChatBubble({ role, content, time }) {
   return (
     <div className={`flex mb-0 w-full ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`group flex max-w-[95%] gap-3 sm:max-w-[85%] lg:max-w-[75%] ${
+        className={`group flex w-full max-w-[95%] min-w-0 gap-3 sm:max-w-[85%] lg:max-w-[75%] ${
           isUser ? "flex-row-reverse" : ""
         }`}
       >
@@ -41,21 +42,35 @@ export default function ChatBubble({ role, content, time }) {
 
         {/* Bubble */}
 
-        <div className="flex flex-col">
+        <div className={`min-w-0 flex flex-col ${isUser ? "items-end" : "flex-1"}`}>
           <div
-            className={`rounded-2xl border px-4 py-3 transition-all duration-300
+            className={`min-w-0 overflow-hidden rounded-2xl border px-4 py-3 transition-all duration-300
             ${
               isUser
                 ? "border-violet-500/30 bg-violet-600 text-white"
                 : "border-white/10 bg-[#171720] text-zinc-200"
             }`}
           >
-            {content?.startsWith("```") ? (
-              <pre className="overflow-x-auto rounded-xl bg-[#0D0D14] p-4 text-sm">
-                <code>{content.replace(/```/g, "")}</code>
-              </pre>
-            ) : (
+            {isUser ? (
               <p className="whitespace-pre-wrap break-words text-sm leading-7">{content}</p>
+            ) : (
+              <div
+                className="
+                prose
+                prose-invert
+                max-w-none
+                prose-p:my-3
+                prose-headings:mb-4
+                prose-headings:mt-6
+                prose-ul:my-3
+                prose-ol:my-3
+                prose-pre:rounded-xl
+               prose-pre:bg-[#0D0D14]
+                prose-code:text-violet-300
+  "
+              >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+              </div>
             )}
           </div>
 

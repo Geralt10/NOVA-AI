@@ -8,7 +8,7 @@ import {
   forgotPassword,
   getMe,
 } from "../services/auth.api";
-import { setUser, setLoading, setError } from "../auth.slice";
+import { setUser, setLoading, setError, clearAuth } from "../auth.slice";
 
 import toast from "react-hot-toast";
 
@@ -67,6 +67,7 @@ export function useAuth() {
     try {
       dispatch(setLoading(true));
       const data = await logout();
+      dispatch(clearAuth())
       toast.success("Logged out successfully!");
     } catch (error) {
       dispatch(setError(error.response?.data?.message || "logout failed"));

@@ -1,11 +1,25 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useChat } from "../hooks/useChat";
+import { useAuth } from "../../auth/hooks/useAuth";
+import { useNavigate } from "react-router";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
   const [search, setSearch] = useState("");
-  const { handleGetMessages } = useChat();
+  const { handleGetMessages, handleNewChat, handleDeleteChat } = useChat();
+  const { handleLogout } = useAuth();
 
+  const navigate = useNavigate();
+
+  const onLogout = async () => {
+    const success = await handleLogout();
+
+    if (success) {
+      navigate("/login", { replace: true });
+    }
+  };
+
+  const user = useSelector((state) => state.auth.user);
   const chats = useSelector((state) => Object.values(state.chat.chats));
 
   const currentChatID = useSelector((state) => state.chat.currentChatID);
@@ -81,7 +95,13 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
           {/* New Chat */}
 
-          <button className="mt-3 flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 text-sm font-medium text-white shadow-lg shadow-violet-600/20 transition-all duration-300 hover:scale-[1.01] hover:shadow-violet-600/40">
+          <button
+            onClick={() => {
+              handleNewChat();
+              setIsOpen(false);
+            }}
+            className="mt-3 flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 text-sm font-medium text-white shadow-lg shadow-violet-600/20 transition-all duration-300 hover:scale-[1.01] hover:shadow-violet-600/40"
+          >
             <i className="ri-add-line"></i>
             New Chat
           </button>
@@ -103,12 +123,12 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           <div className="space-y-2">
             {filteredChats.map((chat) => {
               const isActive = currentChatID === chat.id;
+              console.log(chat.lastUpdated);
 
               return (
                 <button
                   key={chat.id}
                   onClick={() => {
-                
                     handleGetMessages(chat.id);
                     setIsOpen(false);
                   }}
@@ -143,14 +163,20 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                       <h4 className="truncate text-sm font-medium text-white">{chat.title}</h4>
 
                       <p className="mt-1 text-xs text-zinc-500">
-                        {new Date(chat.lastUpdated).toLocaleDateString()}
+                        {chat.lastUpdated ? new Date(chat.lastUpdated).toLocaleDateString() : ""}
                       </p>
                     </div>
 
                     {/* More */}
 
-                    <div className="opacity-0 transition duration-300 group-hover:opacity-100">
-                      <i className="ri-more-2-fill cursor-pointer text-zinc-500 hover:text-white"></i>
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteChat(chat.id);
+                      }}
+                      className="opacity-0 transition duration-300 group-hover:opacity-100"
+                    >
+                      <i className="ri-delete-bin-6-line cursor-pointer text-zinc-500 hover:text-red-500"></i>
                     </div>
                   </div>
                 </button>
@@ -176,9 +202,9 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 />
 
                 <div className="min-w-0 flex-1">
-                  <h3 className="truncate text-sm font-semibold text-white">John Doe</h3>
+                  <h3 className="truncate text-sm font-semibold text-white">{user.username}</h3>
 
-                  <p className="truncate text-xs text-zinc-500">john@example.com</p>
+                  <p className="truncate text-xs text-zinc-500">{user.email}</p>
                 </div>
 
                 <button className="flex h-10 w-10 items-center justify-center rounded-xl text-zinc-400 transition-all duration-300 hover:bg-white/5 hover:text-white">
@@ -193,7 +219,10 @@ export default function Sidebar({ isOpen, setIsOpen }) {
               {/* Menu */}
 
               <div className="space-y-1">
-                <button className="flex w-full items-center gap-3 rounded-xl px-2 py-1 text-sm text-red-400 transition-all duration-300 hover:bg-red-500/10">
+                <button
+                  onClick={onLogout}
+                  className="flex w-full items-center gap-3 rounded-xl px-2 py-1 text-sm text-red-400 transition-all duration-300 hover:bg-red-500/10"
+                >
                   <i className="ri-logout-box-r-line text-lg"></i>
                   Logout
                 </button>
