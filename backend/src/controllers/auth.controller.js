@@ -42,8 +42,9 @@ export async function registerController(req, res, next) {
       expiresIn: "1d",
     }
   );
+  const baseURL = `${req.protocol}://${req.get("host")}`;
 
-  const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${emailVerificationToken}`;
+  const verificationLink = `${baseURL}/api/auth/verify-email?token=${emailVerificationToken}`;
 
   await senEmail({
     to: email,
@@ -86,26 +87,14 @@ export async function verifyEmailController(req, res) {
     }
 
     if (user.verified) {
-      return res.send(
-        `<h1>✅ Email already verified.</h1>
-     <a href="http://localhost:5173/login">
-       Go to Login
-     </a>
-    `
-      );
-    }
+  return res.redirect("/login");
+}
 
     user.verified = true;
 
     await user.save();
 
-    return res.send(`
-      <h1>✅ Email Verified Successfully</h1>
-      <p>Your email has been verified.</p>
-      <a href="http://localhost:5173/login">
-        Go to Login
-      </a>
-  `);
+    return res.redirect("/login");
   } catch (error) {
     return res.status(400).json({
       message: "invalid or expired token",
@@ -155,8 +144,8 @@ export async function resendVerificationEmail(req, res) {
       expiresIn: "1d",
     }
   );
-
-  const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${emailVerificationToken}`;
+  const baseURL = `${req.protocol}://${req.get("host")}`;
+  const verificationLink = `${baseURL}/api/auth/verify-email?token=${emailVerificationToken}`;
 
   await senEmail({
     to: user.email,
@@ -236,17 +225,18 @@ export async function loginController(req, res) {
       expiresIn: "7d",
     }
   );
+  const isProduction = process.env.NODE_ENV === "production";
 
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: false, // production me true kar dena
+    secure: isProduction, // production me true kar dena
     sameSite: "lax",
     maxAge: 15 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: false, // production me true kar dena
+    secure: isProduction, // production me true kar dena
     sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -331,10 +321,10 @@ export async function refreshTokenController(req, res) {
     process.env.JWT_SECRET,
     { expiresIn: "15m" }
   );
-
+  const isProduction = process.env.NODE_ENV === "production";
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: false, // production me true kar dena
+    secure: isProduction, // production me true kar dena
     sameSite: "lax",
     maxAge: 15 * 60 * 1000,
   });
@@ -399,8 +389,8 @@ export async function forgotPasswordController(req, res) {
       expiresIn: "15m",
     }
   );
-
-  const resetLink = `http://localhost:5173/reset-password?token=${resetToken}`;
+  const baseURL = `${req.protocol}://${req.get("host")}`;
+  const resetLink = `${baseURL}/reset-password?token=${resetToken}`;
 
   await senEmail({
     to: user.email,

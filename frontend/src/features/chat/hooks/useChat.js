@@ -69,7 +69,7 @@ export function useChat() {
     dispatch(setChatLoading(true));
     const data = await getChats();
     const { chats } = data;
-    console.log(chats);
+   
     dispatch(
       setChats(
         chats.reduce((acc, chat) => {
@@ -89,7 +89,7 @@ export function useChat() {
   async function handleGetMessages(chatID) {
     try {
       dispatch(setChatLoading(true));
-      console.log("Clicked Chat:", chatID);
+      
       const data = await getMessages(chatID);
       const { messages } = data;
 
