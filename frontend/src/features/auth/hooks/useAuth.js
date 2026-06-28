@@ -45,13 +45,12 @@ export function useAuth() {
   }
 
   async function handleGetMe() {
-    console.log("handleGetMe called");
 
     try {
       dispatch(setLoading(true));
 
       const data = await getMe();
-      console.log("getMe response:", data);
+      
 
       dispatch(setUser(data.user));
     } catch (error) {

@@ -5,7 +5,6 @@ const tavily = Tavily({
 });
 
 export const searchInternet = async ({ query }) => {
-  console.log("🔍 Tool called:", query);
   const results = await tavily.search(query, {
     maxResults: 5,
     searchDepth: "advanced",

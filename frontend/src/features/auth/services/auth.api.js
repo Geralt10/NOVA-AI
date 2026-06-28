@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api/auth",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
@@ -14,13 +14,13 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      originalRequest.url !== "/refresh-token"
+      originalRequest.url !== "/auth/refresh-token"
     ) {
       originalRequest._retry = true;
 
       try {
         // Refresh access token
-        await api.post("/refresh-token");
+        await api.post("/auth/refresh-token");
 
         // Retry original request
         return api(originalRequest);
@@ -35,7 +35,7 @@ api.interceptors.response.use(
 );
 
 export async function register({ username, email, password }) {
-  const response = await api.post("/register", {
+  const response = await api.post("/auth/register", {
     username,
     email,
     password,
@@ -44,7 +44,7 @@ export async function register({ username, email, password }) {
 }
 
 export async function login({ email, password }) {
-  const response = await api.post("/login", {
+  const response = await api.post("/auth/login", {
     email,
     password,
   });
@@ -53,26 +53,26 @@ export async function login({ email, password }) {
 }
 
 export async function getMe() {
-  const response = await api.get("/get-me");
+  const response = await api.get("/auth/get-me");
   return response.data;
 }
 
 export async function resendVerificationEmail({ email }) {
-  const response = await api.post("/resend-verification-email", { email });
+  const response = await api.post("/auth/resend-verification-email", { email });
   return response.data;
 }
 
 export async function forgotPassword({ email }) {
-  const response = await api.post("/forgot-password", { email });
+  const response = await api.post("/auth/forgot-password", { email });
   return response.data;
 }
 
 export async function resetPassword({ token, password }) {
-  const response = await api.post(`/reset-password?token=${token}`, { password });
+  const response = await api.post(`/auth/reset-password?token=${token}`, { password });
   return response.data;
 }
 
 export async function logout() {
-  const response = await api.post("/logout");
+  const response = await api.post("/auth/logout");
   return response.data;
 }

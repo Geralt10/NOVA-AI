@@ -1,12 +1,12 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL:"http://localhost:3000/api/chats",
-    withCredentials:true
-})
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
+});
 
 export const sendMessage = async({message,chatID}) => {
-    const response = await api.post("/message",{
+    const response = await api.post("/chats/message",{
         message,
         chat:chatID
     })
@@ -14,16 +14,16 @@ export const sendMessage = async({message,chatID}) => {
 }
 
 export const getChats = async () => {
-    const response = await api.get("/");
+    const response = await api.get("/chats/");
     return response.data
 }
 
 export const getMessages = async (chatID) => {
-    const response = await api.get(`/${chatID}/messages`);
+    const response = await api.get(`/chats/${chatID}/messages`);
     return response.data
 }
 
 export const deleteChat = async (chatID) => {
-    const response = await api.post(`/delete/${chatID}`);
+    const response = await api.post(`/chats/delete/${chatID}`);
     return response.data
 }

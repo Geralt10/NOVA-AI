@@ -123,7 +123,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           <div className="space-y-2">
             {filteredChats.map((chat) => {
               const isActive = currentChatID === chat.id;
-              console.log(chat.lastUpdated);
+              
 
               return (
                 <button

@@ -14,7 +14,7 @@ const Dashboard = () => {
     chat.handleGetChats();
   }, []);
   const { user } = useSelector((state) => state.auth);
-  console.log(user);
+  
   return (
     <div className="flex h-screen overflow-hidden bg-[#09090F] text-white">
       {/* Sidebar */}
