@@ -1,35 +1,27 @@
-import nodemailer from "nodemailer";
-import { google } from "googleapis";
+import { Resend } from "resend";
 
-const oAuth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET
-);
-
-oAuth2Client.setCredentials({
-  refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
-});
-
-const accessTokenResponse = await oAuth2Client.getAccessToken();
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    type: "OAuth2",
-    user: process.env.GOOGLE_USER,
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-    accessToken: accessTokenResponse.token,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function senEmail({ to, subject, html, text }) {
-  return transporter.sendMail({
-    from: process.env.GOOGLE_USER,
-    to,
-    subject,
-    html,
-    text,
-  });
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "Nova AI <noreply@himanshudhoundiyal.xyz>",
+      to,
+      subject,
+      html,
+      text,
+    });
+
+    if (error) {
+      console.error("Resend Error:", error);
+      throw new Error(error.message);
+    }
+
+    console.log("Email sent successfully:", data);
+
+    return data;
+  } catch (err) {
+    console.error("Send Email Error:", err);
+    throw err;
+  }
 }
