@@ -20,6 +20,7 @@ async function startServer() {
     console.error(error);
   }
 }
+console.log("Node Version:", process.version);
 startServer();
 httpServer.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
