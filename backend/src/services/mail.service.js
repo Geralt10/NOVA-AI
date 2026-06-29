@@ -11,14 +11,6 @@ const transpoter = nodemailer.createTransport({
   },
 });
 
-transpoter
-  .verify()
-  .then(() => {
-    console.log("email transporter is ready to send emails");
-  })
-  .catch((err) => {
-    console.error("email transport verification failed", err);
-  });
 
 export async function senEmail({ to, subject, html, text }) {
   const mailOptions = {
