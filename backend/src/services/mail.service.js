@@ -10,6 +10,12 @@ const transpoter = nodemailer.createTransport({
     clientId: process.env.GOOGLE_CLIENT_ID,
   },
 });
+console.log({
+  user: process.env.GOOGLE_USER,
+  clientId: !!process.env.GOOGLE_CLIENT_ID,
+  clientSecret: !!process.env.GOOGLE_CLIENT_SECRET,
+  refreshToken: !!process.env.GOOGLE_REFRESH_TOKEN,
+});
 
 console.log("Before verify");
 
