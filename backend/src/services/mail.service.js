@@ -13,7 +13,7 @@ const transpoter = nodemailer.createTransport({
 
 console.log("Before verify");
 
-transporter
+transpoter
   .verify()
   .then(() => {
     console.log("email transporter is ready to send emails");
