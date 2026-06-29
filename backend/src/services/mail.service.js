@@ -1,7 +1,10 @@
 import nodemailer from "nodemailer";
 
 const transpoter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  family: 4,
   auth: {
     type: "OAuth2",
     user: process.env.GOOGLE_USER,
@@ -11,14 +14,14 @@ const transpoter = nodemailer.createTransport({
   },
 });
 
-transpoter
-  .verify()
-  .then(() => {
-    console.log("email transporter is ready to send emails");
-  })
-  .catch((err) => {
-    console.error("email transport verification failed", err);
-  });
+// transpoter
+//   .verify()
+//   .then(() => {
+//     console.log("email transporter is ready to send emails");
+//   })
+//   .catch((err) => {
+//     console.error("email transport verification failed", err);
+//   });
 
 export async function senEmail({ to, subject, html, text }) {
   const mailOptions = {
