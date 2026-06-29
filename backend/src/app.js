@@ -1,9 +1,11 @@
 import express from "express";
+import dns from "node:dns/promises";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
 import chatRouter from "./routes/chat.routes.js";
 import cors from "cors";
 import morgan from "morgan";
+
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -24,6 +26,20 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
+
+app.get("/dns-test", async (req, res) => {
+  try {
+    const addresses = await dns.lookup("smtp.gmail.com", {
+      all: true,
+    });
+
+    console.log(addresses);
+    res.json(addresses);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e.message });
+  }
+});
 
 // ✅ API Routes FIRST
 app.use("/api/auth", authRouter);
