@@ -1,39 +1,35 @@
 import nodemailer from "nodemailer";
+import { google } from "googleapis";
 
-const transpoter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  family: 4,
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET
+);
+
+oAuth2Client.setCredentials({
+  refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+});
+
+const accessTokenResponse = await oAuth2Client.getAccessToken();
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
   auth: {
     type: "OAuth2",
     user: process.env.GOOGLE_USER,
+    clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-    clientId: process.env.GOOGLE_CLIENT_ID,
+    accessToken: accessTokenResponse.token,
   },
 });
 
-// transpoter
-//   .verify()
-//   .then(() => {
-//     console.log("email transporter is ready to send emails");
-//   })
-//   .catch((err) => {
-//     console.error("email transport verification failed", err);
-//   });
-
 export async function senEmail({ to, subject, html, text }) {
-  const mailOptions = {
+  return transporter.sendMail({
     from: process.env.GOOGLE_USER,
     to,
     subject,
     html,
     text,
-  };
-
-  const details = await transpoter.sendMail(mailOptions);
-  console.log("email sent:", details);
-
-  return "email has sent successfully to " + to;
+  });
 }
