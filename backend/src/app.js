@@ -30,11 +30,12 @@ app.use("/api/auth", authRouter);
 app.use("/api/chats", chatRouter);
 
 // ✅ Static files
-app.use(express.static(path.join(__dirname, "../public/dist")));
+const publicPath = path.join(__dirname, "../public/dist");
 
-// ✅ React SPA fallback LAST
+app.use(express.static(publicPath));
+
 app.get("/{*any}", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(`${publicPath}/index.html`);
 });
 
 export default app;
