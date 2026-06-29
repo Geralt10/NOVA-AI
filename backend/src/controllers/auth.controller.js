@@ -48,7 +48,7 @@ export async function registerController(req, res, next) {
 
   await senEmail({
     to: email,
-    subject: "Welcome to Perplexity",
+    subject: "Welcome to NOVA_AI",
     html: `
     <p>Hi ${username},</p>
     <p>Thank you for registering at <strong>Perplexity</strong>.</p>
