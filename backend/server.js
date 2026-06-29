@@ -1,6 +1,3 @@
-import dns from "node:dns";
-
-dns.setDefaultResultOrder("ipv4first");
 import "dotenv/config";
 import app from "./src/app.js";
 import http from "http";
@@ -20,7 +17,6 @@ async function startServer() {
     console.error(error);
   }
 }
-console.log("Node Version:", process.version);
 startServer();
 httpServer.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
