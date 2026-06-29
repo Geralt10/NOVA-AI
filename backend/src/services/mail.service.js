@@ -1,9 +1,12 @@
 import nodemailer from "nodemailer";
+import dns from "node:dns/promises";
 
+console.log(await dns.lookup("smtp.gmail.com"));
 const transpoter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,
+  family: 4,
   auth: {
     type: "OAuth2",
     user: process.env.GOOGLE_USER,
