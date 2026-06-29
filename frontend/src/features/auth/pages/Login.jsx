@@ -49,7 +49,7 @@ const Login = () => {
           <div>
             <div className="flex items-center gap-2 text-2xl font-bold">
               <i className="ri-flashlight-fill text-violet-400"></i>
-              Perplexity
+              NOVA AI
             </div>
 
             <h1 className="text-5xl font-bold mt-12 leading-tight">

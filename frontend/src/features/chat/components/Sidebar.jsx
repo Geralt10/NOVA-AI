@@ -63,7 +63,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
               </div>
 
               <div>
-                <h2 className="text-[17px] font-semibold text-white leading-none">Nova AI</h2>
+                <h2 className="text-[17px] font-semibold text-white leading-none">NOVA AI</h2>
 
                 <p className="mt-1 text-[11px] text-zinc-500">AI Workspace</p>
               </div>
@@ -123,7 +123,6 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           <div className="space-y-2">
             {filteredChats.map((chat) => {
               const isActive = currentChatID === chat.id;
-              
 
               return (
                 <button
@@ -174,7 +173,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                         e.stopPropagation();
                         handleDeleteChat(chat.id);
                       }}
-                      className="opacity-0 transition duration-300 group-hover:opacity-100"
+                      className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition duration-300"
                     >
                       <i className="ri-delete-bin-6-line cursor-pointer text-zinc-500 hover:text-red-500"></i>
                     </div>
@@ -232,7 +231,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             {/* Footer */}
 
             <div className="mt-2 text-center">
-              <p className="text-xs text-zinc-600">Nova AI v1.0</p>
+              <p className="text-xs text-zinc-600">NOVA AI v1.0</p>
             </div>
           </div>
         </div>

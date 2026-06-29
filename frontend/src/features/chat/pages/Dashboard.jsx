@@ -16,7 +16,7 @@ const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   
   return (
-    <div className="flex h-screen overflow-hidden bg-[#09090F] text-white">
+    <div className="flex h-dvh overflow-hidden bg-[#09090F] text-white">
       {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
