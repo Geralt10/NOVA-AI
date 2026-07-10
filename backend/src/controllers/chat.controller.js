@@ -16,7 +16,21 @@ export async function sendMessageController(req, res, next) {
     let chat = null;
     let title = null;
 
-    if (!chatID) {
+    if (chatID) {
+      // Verify that the chat belongs to the authenticated user
+      chat = await chatModel.findOne({
+        _id: chatID,
+        user: req.user.id,
+      });
+
+      if (!chat) {
+        return res.status(404).json({
+          success: false,
+          message: "Chat not found",
+        });
+      }
+    } else {
+      // ✅ Create a new chat
       title = await generateChatTitle(message);
 
       chat = await chatModel.create({
@@ -25,20 +39,24 @@ export async function sendMessageController(req, res, next) {
       });
     }
 
-    const currentChatId = chatID || chat._id;
+    const currentChatId = chat._id;
 
-    const userMessage = await messageModel.create({
+    // Save user message
+    await messageModel.create({
       chat: currentChatId,
       content: message,
       role: "user",
     });
 
-    const messages = await messageModel.find({
-      chat: currentChatId,
-    });
+    // Load conversation history
+    const messages = await messageModel
+      .find({ chat: currentChatId })
+      .sort({ createdAt: 1 });
 
+    // Generate AI response
     const result = await generateResponse(messages);
 
+    // Save AI response
     const aiMessage = await messageModel.create({
       chat: currentChatId,
       content: result,
@@ -47,8 +65,8 @@ export async function sendMessageController(req, res, next) {
 
     return res.status(201).json({
       success: true,
-      title,
-      chat,
+      title: title ?? chat.title,
+      chat: chatID ? null : chat, // Only return chat when it's newly created
       chatID: currentChatId,
       aiMessage,
     });
