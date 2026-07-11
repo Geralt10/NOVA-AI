@@ -1,0 +1,20 @@
+# Environment Files
+*.env
+*.env.*
+!*.env.example
+
+# Frontend Build
+/frontend
+
+# Node Modules
+
+backend/node_modules/
+node_modules/
+# Logs
+*.log
+
+
+/node_modules
+/package.json
+/package-lock.json
+/.prettierrc.json
